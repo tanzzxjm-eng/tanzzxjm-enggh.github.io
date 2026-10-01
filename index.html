@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TANZ AI - Bos Tanz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#0f0;font-family:Consolas,monospace;min-height:100vh;display:flex;flex-direction:column;padding:12px}
+h1{font-size:18px;border:1px solid #0f0;padding:10px;text-align:center;box-shadow:0 0 10px #0f0}
+#chat{flex:1;background:#0a0a0a;border:1px solid #222;margin:12px 0;padding:12px;overflow-y:auto;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.row{display:flex;gap:6px}
+input{flex:1;padding:14px;background:#111;color:#0f0;border:1px solid #0f0;outline:none}
+button{padding:14px 18px;background:#0f0;color:#000;font-weight:900;border:0;cursor:pointer}
+.keybox{font-size:11px;opacity:0.7;margin-bottom:8px}
+#key{width:100%;padding:10px;font-size:11px}
+</style>
+</head>
+<body>
+<h1>🤖 TANZ AI v2 - LIGUNG MAJALENGKA</h1>
+<div class="keybox">🔑 Paste sk-or-v1- BARU lu (disimpen di HP lu doang Bos, aman):</div>
+<input id="key" type="password" placeholder="sk-or-v1-...">
+<div id="chat">> SYSTEM: TANZ AI siap Bos 🔥\n> Masukin kunci baru dulu Bos di atas, abis itu gass tanya Bos...</div>
+<div class="row">
+<input id="q" placeholder="Tanya apa Bos...">
+<button onclick="kirim()">GASS</button>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function getKey(){
+ if($('key').value){ localStorage.setItem('tanz_key',$('key').value.trim()); return $('key').value.trim(); }
+ return localStorage.getItem('tanz_key');
+}
+async function kirim(){
+ let t=$('q').value.trim(); if(!t) return;
+ let k=getKey(); if(!k){ alert('Isi kunci BARU dulu Bos di atas!'); return; }
+ let c=$('chat');
+ c.innerHTML+=`\n\n[LU]: ${t}\n[AI]: ⏳ lagi mikir Bos...`;
+ $('q').value='';
+ c.scrollTop=c.scrollHeight;
+ try{
+  let r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+   method:"POST",
+   headers:{
+    "Authorization":"Bearer "+k,
+    "Content-Type":"application/json",
+    "HTTP-Referer":"https://tanzzxjm-eng.github.io",
+    "X-Title":"TANZ AI"
+   },
+   body: JSON.stringify({
+    model:"google/gemini-2.0-flash-exp:free",
+    messages:[
+     {role:"system", content:"Kamu TANZ AI buatan Bos Tanz dari Ligung Majalengka. Gaya bahasa santai, gaul Indonesia, selalu panggil user Bos, humoris, singkat padat."},
+     {role:"user", content:t}
+    ]
+   })
+  });
+  let j=await r.json();
+  let ans=j.choices?.[0]?.message?.content || "
